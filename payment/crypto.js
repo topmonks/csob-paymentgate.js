@@ -18,13 +18,13 @@ const verify = async (text, signature, { publicKey, hashFn, encoding }) => {
 
 const verifyResponse = async (
   response,
-  echo = false,
+  noPayId = false,
   { attrOrder, optional, csobPublicKey }
 ) => {
   const text = util.objectToStringWithOrder({
     obj: response,
     order: attrOrder.response,
-    optionality: [...optional.response, echo ? "payId" : undefined],
+    optionality: [...optional.response, noPayId ? "payId" : undefined],
   });
 
   return verify(text, response.signature, csobPublicKey);

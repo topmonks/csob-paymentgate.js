@@ -1,0 +1,3 @@
+[submodule "paymentgateway"]
+	path = paymentgateway
+	url = git@github.com:csob/paymentgateway.git

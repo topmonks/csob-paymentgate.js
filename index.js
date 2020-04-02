@@ -1,28 +1,32 @@
+const request = require("superagent");
 const crypto = require("./payment/crypto");
 const payload = require("./payment/payload");
 const util = require("./payment/util");
+const getConfig = require("./payment/config");
 
-const csob = ({ merchantId, privateKey, publicKey }) => {
+const csob = ({ merchantId, privateKey, publicKey, test = false }) => {
+  const config = getConfig(test);
   return {
     echo: async () => {
       const payloadData = payload.echo({ merchantId });
       const signature = util.objectToStringWithOrder({
         obj: payloadData,
-        order: ["merchantId", "dttm"],
-        optionality: ["signature"],
+        order: config.order.echo,
+        optionality: config.optional.echo,
       });
-      const privateKey = fs.readFileSync("./rsa_M1MIPS1446.key", {
-        encoding: "utf8",
-      });
-      payloadData.signature = await crypto.sign(signature, {
-        privateKey,
-        hashFn: "sha256",
-        encoding: "base64",
+      payloadData.signature = await crypto.sign(signature, privateKey);
+
+      const { body } = await request
+        .post(`${config.uri}/${config.methods.echo}`)
+        .send(payloadData);
+
+      crypto.verifyResponse(body, true, {
+        csobPublicKey: config.csobPublicKey,
+        optional: config.optional,
+        order: config.order,
       });
 
-      const result = await request
-        .post(`https://iapi.iplatebnibrana.csob.cz/api/v1.8/echo`)
-        .send(payloadData);
+      return body;
     },
   };
 };

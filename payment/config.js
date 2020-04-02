@@ -1,8 +1,12 @@
 const fs = require("fs");
+const path = require("path");
 
 const config = {
   csobPublicKey: fs.readFileSync(
-    "./paymentgateway/keys/mips_platebnibrana.csob.cz.pub",
+    path.resolve(
+      __dirname,
+      "../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
+    ),
     { encoding: "utf8" }
   ),
   uri: "https://api.platebnibrana.csob.cz/api/v1.8",
@@ -11,6 +15,7 @@ const config = {
   errorPaymentStatuses: [3, 5, 6],
   successPaymentStatuses: [4, 7, 8],
   methods: {
+    echo: "echo",
     init: "payment/init",
     process: "payment/process",
     status: "payment/status",
@@ -90,7 +95,10 @@ const config = {
 
 const testConfig = {
   csobPublicKey: fs.readFileSync(
-    "./paymentgateway/keys/mips_platebnibrana.csob.cz.pub",
+    path.resolve(
+      __dirname,
+      "../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
+    ),
     { encoding: "utf8" }
   ),
   uri: "https://iapi.iplatebnibrana.csob.cz/api/v1.8",

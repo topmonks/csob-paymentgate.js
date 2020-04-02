@@ -1,7 +1,7 @@
 const crypto = require("../util");
 const config = require("../config")();
 
-describe("Payment utils", () => {
+describe("utils", () => {
   it("converts request object to a string separated by |", () => {
     const reqObj = {
       foo: "bar",

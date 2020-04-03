@@ -5,7 +5,7 @@ const objectToStringWithOrder = ({
   obj,
   order = [],
   separator = "|",
-  optionality = [],
+  optional = [],
   URIencode = false,
 }) => {
   const traverse = (key, child, keyPath) => {
@@ -26,9 +26,7 @@ const objectToStringWithOrder = ({
         .slice(1, -1)
         .split(",")
         .map((singleAttrName) => singleAttrName.trim())
-        .map((singleAttrName) =>
-          traverse(singleAttrName, child, `${keyPath}.${singleAttrName}`)
-        )
+        .map((singleAttrName) => traverse(singleAttrName, child, `${keyPath}`))
         .filter((i) => i !== undefined)
         .join(separator);
     }
@@ -39,7 +37,7 @@ const objectToStringWithOrder = ({
 
     // eslint-disable-next-line no-param-reassign
     keyPath = `${keyPath}.${attrName}`.slice(1);
-    if (result == null && !optionality.includes(keyPath)) {
+    if (result == null && !optional.includes(keyPath)) {
       throw new Error(`Missing required attribute ${keyPath}`);
     }
 

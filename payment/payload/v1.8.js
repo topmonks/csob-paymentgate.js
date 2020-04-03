@@ -1,4 +1,4 @@
-const { dttm } = require("./crypto");
+const { dttm } = require("../crypto");
 
 module.exports = {
   init: (_opts) => {
@@ -7,13 +7,13 @@ module.exports = {
       currency: "CZK",
       closePayment: true,
       cart: [],
-      language: "EN",
+      language: "CZ",
     };
 
     const {
       merchantId,
       orderNo,
-      oneClickPayment,
+      payOperation,
       payMethod,
       totalAmount,
       currency,
@@ -21,7 +21,6 @@ module.exports = {
       returnUrl,
       returnMethod,
       cart,
-      description,
       customerId,
       language,
     } = Object.assign(defaultValues, _opts);
@@ -30,7 +29,7 @@ module.exports = {
       merchantId,
       orderNo,
       dttm: dttm(),
-      payOperation: oneClickPayment ? "oneclickPayment" : "payment",
+      payOperation,
       payMethod,
       totalAmount,
       currency,
@@ -38,21 +37,6 @@ module.exports = {
       returnUrl,
       returnMethod,
       cart,
-      // [
-      //   {
-      //     name: "Your Bill",
-      //     quantity: 1,
-      //     amount: _.round(
-      //       (occupation.bill.amount - cashbackOnBill) * config.paygateAccuracy
-      //     ),
-      //   },
-      //   {
-      //     name: "Your Tip",
-      //     quantity: 1,
-      //     amount: _.round((args.tip - cashbackOnTip) * config.paygateAccuracy),
-      //   },
-      // ],
-      description,
       customerId,
       language,
     };
@@ -106,5 +90,70 @@ module.exports = {
       payId,
       dttm: dttm(),
     }),
+  },
+  order: {
+    init: [
+      "merchantId",
+      "orderNo",
+      "dttm",
+      "payOperation",
+      "payMethod",
+      "totalAmount",
+      "currency",
+      "closePayment",
+      "returnUrl",
+      "returnMethod",
+      "cart[].{name, quantity, amount, description}",
+      "merchantData",
+      "customerId",
+      "language",
+      "ttlSec",
+      "logoVersion",
+      "colorSchemeVersion",
+    ],
+    process: ["merchantId", "payId", "dttm", "signature"],
+    reversePayment: ["merchantId", "payId", "dttm", "signature"],
+    status: ["merchantId", "payId", "dttm", "signature"],
+    echo: ["merchantId", "dttm", "signature"],
+    response: [
+      "payId",
+      "dttm",
+      "resultCode",
+      "resultMessage",
+      "paymentStatus",
+      "authCode",
+      "merchantData",
+    ],
+    oneclick: {
+      init: [
+        "merchantId",
+        "origPayId",
+        "orderNo",
+        "dttm",
+        "totalAmount",
+        "currency",
+        "description",
+      ],
+      start: ["merchantId", "payId", "dttm"],
+    },
+  },
+  optional: {
+    init: [
+      "cart[].description",
+      "merchantData",
+      "customerId",
+      "ttlSec",
+      "logoVersion",
+      "colorSchemeVersion",
+    ],
+    process: ["signature"],
+    reversePayment: ["signature"],
+    status: ["signature"],
+    echo: ["signature"],
+    response: ["paymentStatus", "authCode", "merchantData"],
+    oneclick: {
+      init: [],
+      start: [],
+    },
   },
 };

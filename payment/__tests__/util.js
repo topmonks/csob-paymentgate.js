@@ -34,6 +34,21 @@ describe("utils", () => {
     ).toEqual("bar2|bar3|barArray1|barArray2|bar|stringFoo|stringBar");
   });
 
+  it("converts request object to a uri string", () => {
+    const obj = {
+      merchantId: "M1MIPS1446",
+      payId: "51bcbde9d9bc0FD",
+      dttm: "20200404064700",
+      signature: "signature",
+    };
+    expect(
+      crypto.objectToStringWithOrder({
+        obj,
+        order: payload.order.process,
+      })
+    ).toEqual("M1MIPS1446|51bcbde9d9bc0FD|20200404064700|signature");
+  });
+
   describe("examples https://github.com/csob/paymentgateway/wiki/Podpis-po%C5%BEadavku-a-ov%C4%9B%C5%99en%C3%AD-podpisu-odpov%C4%9Bdi", () => {
     it("1 v1.8", () => {
       const obj = {

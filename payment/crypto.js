@@ -24,8 +24,8 @@ const verifyResponse = (
 ) => {
   const text = util.objectToStringWithOrder({
     obj: response,
-    order: order.response,
-    optional: [...optional.response, noPayId ? "payId" : undefined],
+    order,
+    optional: [...optional, noPayId ? "payId" : undefined],
   });
 
   return verify(text, response.signature, csobPublicKey);

@@ -31,11 +31,38 @@ const csob = ({
 
       crypto.verifyResponse(body, true, {
         csobPublicKey: config.csobPublicKey,
-        optional: payload.optional,
-        order: payload.order,
+        optional: payload.optional.response,
+        order: payload.order.response,
       });
 
       return body;
+    },
+    process: async (payId) => {
+      const payloadData = payload.process({
+        merchantId,
+        payId,
+      });
+
+      const signature = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.process,
+        optional: payload.optional.process,
+      });
+
+      payloadData.signature = await crypto.sign(signature, privateKey);
+
+      const pathParam = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.process,
+        separator: "/",
+        URIencode: true,
+      });
+
+      const body = await request.get(
+        `${config.uri}/${config.methods.process}/${pathParam}`
+      );
+
+      return body.redirects[0];
     },
     echo: async () => {
       const payloadData = payload.echo({ merchantId });
@@ -52,8 +79,8 @@ const csob = ({
 
       crypto.verifyResponse(body, true, {
         csobPublicKey: config.csobPublicKey,
-        optional: payload.optional,
-        order: payload.order,
+        optional: payload.optional.response,
+        order: payload.order.response,
       });
 
       return body;

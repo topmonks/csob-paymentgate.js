@@ -46,7 +46,7 @@ module.exports = {
     payId,
     dttm: dttm(),
   }),
-  reversePayment: ({ payId, merchantId }) => ({
+  reverse: ({ payId, merchantId }) => ({
     merchantId,
     payId,
     dttm: dttm(),
@@ -61,6 +61,15 @@ module.exports = {
     dttm: dttm(),
   }),
   oneclick: {
+    echo: (_opts) => {
+      const { merchantId, origPayId } = _opts;
+
+      return {
+        merchantId,
+        origPayId,
+        dttm: dttm(),
+      };
+    },
     init: (_opts) => {
       const defaultValues = {
         currency: "CZK",
@@ -112,7 +121,7 @@ module.exports = {
       "colorSchemeVersion",
     ],
     process: ["merchantId", "payId", "dttm", "signature"],
-    reversePayment: ["merchantId", "payId", "dttm", "signature"],
+    reverse: ["merchantId", "payId", "dttm", "signature"],
     status: ["merchantId", "payId", "dttm", "signature"],
     echo: ["merchantId", "dttm", "signature"],
     response: [
@@ -147,7 +156,7 @@ module.exports = {
       "colorSchemeVersion",
     ],
     process: ["signature"],
-    reversePayment: ["signature"],
+    reverse: ["signature"],
     status: ["signature"],
     echo: ["signature"],
     response: ["paymentStatus", "authCode", "merchantData"],

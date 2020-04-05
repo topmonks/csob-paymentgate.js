@@ -85,6 +85,15 @@ const csob = ({
 
       return body;
     },
+
+    verifyCsobRequest: (body) => {
+      return crypto.verifyResponse(body, true, {
+        csobPublicKey: config.csobPublicKey,
+        optional: payload.optional.response,
+        order: payload.order.response,
+      });
+    },
+    config,
   };
 };
 

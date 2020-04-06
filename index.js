@@ -86,6 +86,111 @@ const csob = ({
       return body;
     },
 
+    status: async (payId) => {
+      const payloadData = payload.status({
+        merchantId,
+        payId,
+      });
+
+      const signature = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.status,
+        optional: payload.optional.status,
+      });
+
+      payloadData.signature = await crypto.sign(signature, privateKey);
+
+      const { body } = await request
+        .post(`${config.uri}/${config.methods.status}`)
+        .send(payload);
+
+      crypto.verifyResponse(body, true, {
+        csobPublicKey: config.csobPublicKey,
+        optional: payload.optional.response,
+        order: payload.order.response,
+      });
+
+      return body;
+    },
+
+    oneclick: {
+      init: async (data) => {
+        const payloadData = payload.oneclick.init({
+          merchantId,
+          ...data,
+        });
+        const signature = util.objectToStringWithOrder({
+          obj: payloadData,
+          order: payload.order.oneclick.init,
+          optional: payload.optional.oneclick.init,
+        });
+        payloadData.signature = await crypto.sign(signature, privateKey);
+        const { body } = await request
+          .post(`${config.uri}/${config.methods.oneclick.init}`)
+          .send(payloadData);
+
+        crypto.verifyResponse(body, true, {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        });
+
+        return body;
+      },
+      start: async (payId) => {
+        const payloadData = payload.oneclick.start({
+          merchantId,
+          payId,
+        });
+
+        const signature = util.objectToStringWithOrder({
+          obj: payloadData,
+          order: payload.order.oneclick.start,
+          optional: payload.optional.oneclick.start,
+        });
+
+        payloadData.signature = await crypto.sign(signature, privateKey);
+
+        const { body } = await request
+          .post(`${config.uri}/${config.methods.oneclick.start}`)
+          .send(payloadData);
+
+        crypto.verifyResponse(body, true, {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        });
+
+        return body;
+      },
+      echo: async (payId) => {
+        const payloadData = payload.oneclick.echo({
+          merchantId,
+          origPayId: payId,
+        });
+
+        const signature = util.objectToStringWithOrder({
+          obj: payloadData,
+          order: payload.order.oneclick.echo,
+          optional: payload.optional.oneclick.echo,
+        });
+
+        payloadData.signature = await crypto.sign(signature, privateKey);
+
+        const { body } = await request
+          .post(`${config.uri}/${config.methods.oneclick.echo}`)
+          .send(payloadData);
+
+        crypto.verifyResponse(body, true, {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        });
+
+        return body;
+      },
+    },
+
     verifyCsobRequest: (body) => {
       return crypto.verifyResponse(body, true, {
         csobPublicKey: config.csobPublicKey,

@@ -21,6 +21,7 @@ module.exports = {
       returnUrl,
       returnMethod,
       cart,
+      merchantData,
       customerId,
       language,
     } = Object.assign(defaultValues, _opts);
@@ -37,6 +38,7 @@ module.exports = {
       returnUrl,
       returnMethod,
       cart,
+      merchantData,
       customerId,
       language,
     };
@@ -71,27 +73,25 @@ module.exports = {
       };
     },
     init: (_opts) => {
-      const defaultValues = {
-        currency: "CZK",
-      };
-
       const {
         merchantId,
         orderNo,
+        clientIp,
         totalAmount,
         currency,
-        description,
         origPayId,
-      } = Object.assign(defaultValues, _opts);
+        merchantData,
+      } = _opts;
 
       return {
         merchantId,
         origPayId,
         orderNo,
         dttm: dttm(),
+        clientIp,
         totalAmount,
         currency,
-        description,
+        merchantData,
       };
     },
     start: ({ payId, merchantId }) => ({
@@ -134,14 +134,16 @@ module.exports = {
       "merchantData",
     ],
     oneclick: {
+      echo: ["merchantId", "origPayId", "dttm"],
       init: [
         "merchantId",
         "origPayId",
         "orderNo",
         "dttm",
+        "clientIp",
         "totalAmount",
         "currency",
-        "description",
+        "merchantData",
       ],
       start: ["merchantId", "payId", "dttm"],
     },
@@ -161,7 +163,8 @@ module.exports = {
     echo: ["signature"],
     response: ["paymentStatus", "authCode", "merchantData"],
     oneclick: {
-      init: [],
+      echo: [],
+      init: ["totalAmount", "currency", "merchantData"],
       start: [],
     },
   },

@@ -21,8 +21,9 @@ const config = {
     status: "payment/status",
     reverse: "payment/reverse",
     oneclick: {
-      init: "payment/oneclick/init",
-      start: "payment/oneclick/start",
+      echo: "oneclick/echo",
+      init: "oneclick/init",
+      start: "oneclick/start",
     },
   },
 };

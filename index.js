@@ -58,11 +58,12 @@ const csob = ({
         URIencode: true,
       });
 
-      const body = await request.get(
-        `${config.uri}/${config.methods.process}/${pathParam}`
-      );
+      const body = await request
+        .get(`${config.uri}/${config.methods.process}/${pathParam}`)
+        .redirects(0)
+        .ok((res) => res.status < 400);
 
-      return body.redirects[0];
+      return body.header.location;
     },
     echo: async () => {
       const payloadData = payload.echo({ merchantId });
@@ -100,9 +101,16 @@ const csob = ({
 
       payloadData.signature = await crypto.sign(signature, privateKey);
 
-      const { body } = await request
-        .post(`${config.uri}/${config.methods.status}`)
-        .send(payload);
+      const pathParam = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.process,
+        separator: "/",
+        URIencode: true,
+      });
+
+      const { body } = await request.get(
+        `${config.uri}/${config.methods.status}/${pathParam}`
+      );
 
       crypto.verifyResponse(body, true, {
         csobPublicKey: config.csobPublicKey,

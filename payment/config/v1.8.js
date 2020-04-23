@@ -32,7 +32,7 @@ const testConfig = {
   csobPublicKey: fs.readFileSync(
     path.resolve(
       __dirname,
-      "../../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
+      "../../paymentgateway/keys/mips_iplatebnibrana.csob.cz.pub"
     ),
     { encoding: "utf8" }
   ),

@@ -9,6 +9,19 @@ const sign = (text, privateKey, hashFn, encoding) => {
   return signer.sign(privateKey, encoding);
 };
 
+class VERIFICATION_ERROR extends Error {
+  constructor(message) {
+    super(message);
+
+    this.name = this.constructor.name;
+    this.status = 400;
+  }
+
+  statusCode() {
+    return this.status;
+  }
+}
+
 const verify = (text, signature, publicKey, hashFn, encoding) => {
   const verifier = crypto.createVerify(hashFn);
   verifier.update(text);
@@ -29,7 +42,21 @@ const verifyResponse = (
     optional: [...optional, noPayId ? "payId" : undefined],
   });
 
-  return verify(text, response.signature, csobPublicKey, hashFn, encoding);
+  const verification = verify(
+    text,
+    response.signature,
+    csobPublicKey,
+    hashFn,
+    encoding
+  );
+
+  if (!verification) {
+    throw new VERIFICATION_ERROR(
+      "CSOB response signature verification failed."
+    );
+  }
+
+  return verification;
 };
 
 const dttm = () => moment().format("YYYYMMDDHHmmss");

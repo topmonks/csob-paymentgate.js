@@ -1,26 +1,27 @@
 const crypto = require("crypto");
 const moment = require("moment");
 const util = require("./util");
-const config = require("./config")();
 
-const sign = (text, privateKey) => {
-  const signer = crypto.createSign(config.hashFn);
+const sign = (text, privateKey, hashFn, encoding) => {
+  const signer = crypto.createSign(hashFn);
   signer.update(text);
 
-  return signer.sign(privateKey, config.encoding);
+  return signer.sign(privateKey, encoding);
 };
 
-const verify = (text, signature, publicKey) => {
-  const verifier = crypto.createVerify(config.hashFn);
+const verify = (text, signature, publicKey, hashFn, encoding) => {
+  const verifier = crypto.createVerify(hashFn);
   verifier.update(text);
 
-  return verifier.verify(publicKey, signature, config.encoding);
+  return verifier.verify(publicKey, signature, encoding);
 };
 
 const verifyResponse = (
   response,
   noPayId = false,
-  { order, optional, csobPublicKey }
+  { order, optional, csobPublicKey },
+  hashFn,
+  encoding
 ) => {
   const text = util.objectToStringWithOrder({
     obj: response,
@@ -28,7 +29,7 @@ const verifyResponse = (
     optional: [...optional, noPayId ? "payId" : undefined],
   });
 
-  return verify(text, response.signature, csobPublicKey);
+  return verify(text, response.signature, csobPublicKey, hashFn, encoding);
 };
 
 const dttm = () => moment().format("YYYYMMDDHHmmss");

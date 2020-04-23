@@ -2,7 +2,7 @@ const request = require("superagent");
 const crypto = require("./payment/crypto");
 const payloadVersions = require("./payment/payload");
 const util = require("./payment/util");
-const getConfig = require("./payment/config");
+const getConfigs = require("./payment/config");
 
 const csob = ({
   merchantId,
@@ -12,7 +12,7 @@ const csob = ({
   version = "1.8",
 }) => {
   const payload = payloadVersions[version];
-  const config = getConfig(test);
+  const config = getConfigs[version](test);
   return {
     init: async (data) => {
       const payloadData = payload.init({
@@ -24,16 +24,27 @@ const csob = ({
         order: payload.order.init,
         optional: payload.optional.init,
       });
-      payloadData.signature = await crypto.sign(signature, privateKey);
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
       const { body } = await request
         .post(`${config.uri}/${config.methods.init}`)
         .send(payloadData);
 
-      crypto.verifyResponse(body, true, {
-        csobPublicKey: config.csobPublicKey,
-        optional: payload.optional.response,
-        order: payload.order.response,
-      });
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
 
       return body;
     },
@@ -49,7 +60,12 @@ const csob = ({
         optional: payload.optional.process,
       });
 
-      payloadData.signature = await crypto.sign(signature, privateKey);
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
 
       const pathParam = util.objectToStringWithOrder({
         obj: payloadData,
@@ -72,17 +88,28 @@ const csob = ({
         order: payload.order.echo,
         optional: payload.optional.echo,
       });
-      payloadData.signature = await crypto.sign(signature, privateKey);
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
 
       const { body } = await request
         .post(`${config.uri}/${config.methods.echo}`)
         .send(payloadData);
 
-      crypto.verifyResponse(body, true, {
-        csobPublicKey: config.csobPublicKey,
-        optional: payload.optional.response,
-        order: payload.order.response,
-      });
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
 
       return body;
     },
@@ -99,7 +126,12 @@ const csob = ({
         optional: payload.optional.status,
       });
 
-      payloadData.signature = await crypto.sign(signature, privateKey);
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
 
       const pathParam = util.objectToStringWithOrder({
         obj: payloadData,
@@ -112,11 +144,17 @@ const csob = ({
         `${config.uri}/${config.methods.status}/${pathParam}`
       );
 
-      crypto.verifyResponse(body, true, {
-        csobPublicKey: config.csobPublicKey,
-        optional: payload.optional.response,
-        order: payload.order.response,
-      });
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
 
       return body;
     },
@@ -132,16 +170,27 @@ const csob = ({
           order: payload.order.oneclick.init,
           optional: payload.optional.oneclick.init,
         });
-        payloadData.signature = await crypto.sign(signature, privateKey);
+        payloadData.signature = await crypto.sign(
+          signature,
+          privateKey,
+          config.hashFn,
+          config.encoding
+        );
         const { body } = await request
           .post(`${config.uri}/${config.methods.oneclick.init}`)
           .send(payloadData);
 
-        crypto.verifyResponse(body, true, {
-          csobPublicKey: config.csobPublicKey,
-          optional: payload.optional.response,
-          order: payload.order.response,
-        });
+        crypto.verifyResponse(
+          body,
+          true,
+          {
+            csobPublicKey: config.csobPublicKey,
+            optional: payload.optional.response,
+            order: payload.order.response,
+          },
+          config.hashFn,
+          config.encoding
+        );
 
         return body;
       },
@@ -157,17 +206,28 @@ const csob = ({
           optional: payload.optional.oneclick.start,
         });
 
-        payloadData.signature = await crypto.sign(signature, privateKey);
+        payloadData.signature = await crypto.sign(
+          signature,
+          privateKey,
+          config.hashFn,
+          config.encoding
+        );
 
         const { body } = await request
           .post(`${config.uri}/${config.methods.oneclick.start}`)
           .send(payloadData);
 
-        crypto.verifyResponse(body, true, {
-          csobPublicKey: config.csobPublicKey,
-          optional: payload.optional.response,
-          order: payload.order.response,
-        });
+        crypto.verifyResponse(
+          body,
+          true,
+          {
+            csobPublicKey: config.csobPublicKey,
+            optional: payload.optional.response,
+            order: payload.order.response,
+          },
+          config.hashFn,
+          config.encoding
+        );
 
         return body;
       },
@@ -183,28 +243,45 @@ const csob = ({
           optional: payload.optional.oneclick.echo,
         });
 
-        payloadData.signature = await crypto.sign(signature, privateKey);
+        payloadData.signature = await crypto.sign(
+          signature,
+          privateKey,
+          config.hashFn,
+          config.encoding
+        );
 
         const { body } = await request
           .post(`${config.uri}/${config.methods.oneclick.echo}`)
           .send(payloadData);
 
-        crypto.verifyResponse(body, true, {
-          csobPublicKey: config.csobPublicKey,
-          optional: payload.optional.response,
-          order: payload.order.response,
-        });
+        crypto.verifyResponse(
+          body,
+          true,
+          {
+            csobPublicKey: config.csobPublicKey,
+            optional: payload.optional.response,
+            order: payload.order.response,
+          },
+          config.hashFn,
+          config.encoding
+        );
 
         return body;
       },
     },
 
     verifyCsobRequest: (body) => {
-      return crypto.verifyResponse(body, true, {
-        csobPublicKey: config.csobPublicKey,
-        optional: payload.optional.response,
-        order: payload.order.response,
-      });
+      return crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
     },
     config,
   };

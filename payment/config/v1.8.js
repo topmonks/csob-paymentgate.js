@@ -5,7 +5,7 @@ const config = {
   csobPublicKey: fs.readFileSync(
     path.resolve(
       __dirname,
-      "../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
+      "../../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
     ),
     { encoding: "utf8" }
   ),
@@ -32,7 +32,7 @@ const testConfig = {
   csobPublicKey: fs.readFileSync(
     path.resolve(
       __dirname,
-      "../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
+      "../../paymentgateway/keys/mips_platebnibrana.csob.cz.pub"
     ),
     { encoding: "utf8" }
   ),
@@ -40,5 +40,5 @@ const testConfig = {
 };
 
 module.exports = (test = true) => {
-  return Object.assign(config, test ? testConfig : {});
+  return { ...config, ...(test ? testConfig : {}) };
 };

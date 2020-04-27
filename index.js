@@ -102,7 +102,82 @@ const csob = ({
       );
 
       const { body } = await request
-        .post(`${config.uri}/${config.methods.refund}`)
+        .put(`${config.uri}/${config.methods.refund}`)
+        .send(payloadData);
+
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
+
+      return body;
+    },
+    reverse: async (payId) => {
+      const payloadData = payload.reverse({
+        merchantId,
+        payId,
+      });
+
+      const signature = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.reverse,
+        optional: payload.optional.reverse,
+      });
+
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
+
+      const { body } = await request
+        .put(`${config.uri}/${config.methods.reverse}`)
+        .send(payloadData);
+
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
+
+      return body;
+    },
+    close: async (payId, amount) => {
+      const payloadData = payload.close({
+        merchantId,
+        payId,
+        amount,
+      });
+
+      const signature = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.close,
+        optional: payload.optional.close,
+      });
+
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
+
+      const { body } = await request
+        .put(`${config.uri}/${config.methods.close}`)
         .send(payloadData);
 
       crypto.verifyResponse(

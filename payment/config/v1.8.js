@@ -12,7 +12,7 @@ const config = {
   uri: "https://api.platebnibrana.csob.cz/api/v1.8",
   hashFn: "sha256",
   encoding: "base64",
-  errorPaymentStatuses: ["3", "5", "6"],
+  errorPaymentStatuses: ["3", "5", "6", "9", "10"],
   successPaymentStatuses: ["4", "7", "8"],
   methods: {
     echo: "echo",
@@ -20,6 +20,7 @@ const config = {
     process: "payment/process",
     status: "payment/status",
     reverse: "payment/reverse",
+    close: "payment/close",
     refund: "payment/refund",
     oneclick: {
       echo: "oneclick/echo",

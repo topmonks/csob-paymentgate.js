@@ -20,6 +20,7 @@ const config = {
     process: "payment/process",
     status: "payment/status",
     reverse: "payment/reverse",
+    refund: "payment/refund",
     oneclick: {
       echo: "oneclick/echo",
       init: "oneclick/init",

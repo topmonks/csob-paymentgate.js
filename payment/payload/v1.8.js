@@ -48,6 +48,12 @@ module.exports = {
     payId,
     dttm: dttm(),
   }),
+  refund: ({ payId, merchantId, amount }) => ({
+    merchantId,
+    payId,
+    amount,
+    dttm: dttm(),
+  }),
   reverse: ({ payId, merchantId }) => ({
     merchantId,
     payId,
@@ -121,6 +127,7 @@ module.exports = {
       "colorSchemeVersion",
     ],
     process: ["merchantId", "payId", "dttm", "signature"],
+    refund: ["merchantId", "payId", "dttm", "amount", "signature"],
     reverse: ["merchantId", "payId", "dttm", "signature"],
     status: ["merchantId", "payId", "dttm", "signature"],
     echo: ["merchantId", "dttm", "signature"],
@@ -158,6 +165,7 @@ module.exports = {
       "colorSchemeVersion",
     ],
     process: ["signature"],
+    refund: ["amount", "signature"],
     reverse: ["signature"],
     status: ["signature"],
     echo: ["signature"],

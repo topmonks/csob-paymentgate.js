@@ -81,6 +81,44 @@ const csob = ({
 
       return body.header.location;
     },
+    refund: async (payId, amount) => {
+      const payloadData = payload.refund({
+        merchantId,
+        payId,
+        amount,
+      });
+
+      const signature = util.objectToStringWithOrder({
+        obj: payloadData,
+        order: payload.order.refund,
+        optional: payload.optional.refund,
+      });
+
+      payloadData.signature = await crypto.sign(
+        signature,
+        privateKey,
+        config.hashFn,
+        config.encoding
+      );
+
+      const { body } = await request
+        .post(`${config.uri}/${config.methods.refund}`)
+        .send(payloadData);
+
+      crypto.verifyResponse(
+        body,
+        true,
+        {
+          csobPublicKey: config.csobPublicKey,
+          optional: payload.optional.response,
+          order: payload.order.response,
+        },
+        config.hashFn,
+        config.encoding
+      );
+
+      return body;
+    },
     echo: async () => {
       const payloadData = payload.echo({ merchantId });
       const signature = util.objectToStringWithOrder({

@@ -54,10 +54,10 @@ module.exports = {
     amount,
     dttm: dttm(),
   }),
-  close: ({ payId, merchantId, amount }) => ({
+  close: ({ payId, merchantId, totalAmount }) => ({
     merchantId,
     payId,
-    amount,
+    totalAmount,
     dttm: dttm(),
   }),
   reverse: ({ payId, merchantId }) => ({
@@ -134,7 +134,7 @@ module.exports = {
     ],
     process: ["merchantId", "payId", "dttm", "signature"],
     refund: ["merchantId", "payId", "dttm", "amount", "signature"],
-    close: ["merchantId", "payId", "dttm", "amount", "signature"],
+    close: ["merchantId", "payId", "dttm", "totalAmount", "signature"],
     reverse: ["merchantId", "payId", "dttm", "signature"],
     status: ["merchantId", "payId", "dttm", "signature"],
     echo: ["merchantId", "dttm", "signature"],
@@ -173,7 +173,7 @@ module.exports = {
     ],
     process: ["signature"],
     refund: ["amount", "signature"],
-    close: ["amount", "signature"],
+    close: ["totalAmount", "signature"],
     reverse: ["signature"],
     status: ["signature"],
     echo: ["signature"],

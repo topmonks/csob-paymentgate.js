@@ -1,14 +1,17 @@
 {
-  "name": "@topmonks/csob-paymentgate",
-  "version": "0.2.3",
-  "description": "",
+  "name": "@plugpo/csob-paymentgate",
+  "version": "0.0.2",
+  "description": "This is the fork of @topmonks/csob-paymentgate with some bug fixes.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
-  "repository": "https://github.com/topmonks/csob-paymentgate.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/varecham/csob-paymentgate.js.git"
+  },
   "devDependencies": {
     "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^14.1.0",
@@ -22,5 +25,15 @@
   "dependencies": {
     "moment": "^2.24.0",
     "superagent": "^6.0.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/varecham/csob-paymentgate.js/issues"
+  },
+  "homepage": "https://github.com/varecham/csob-paymentgate.js#readme",
+  "keywords": [
+    "csob",
+    "js",
+    "payment",
+    "gateway"
+  ]
 }

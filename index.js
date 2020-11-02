@@ -156,11 +156,11 @@ const csob = ({
 
       return body;
     },
-    close: async (payId, amount) => {
+    close: async (payId, totalAmount) => {
       const payloadData = payload.close({
         merchantId,
         payId,
-        amount,
+        totalAmount,
       });
 
       const signature = util.objectToStringWithOrder({

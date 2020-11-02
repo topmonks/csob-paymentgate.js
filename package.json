@@ -1,6 +1,6 @@
 {
   "name": "@plugpo/csob-paymentgate",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "This is the fork of @topmonks/csob-paymentgate with some bug fixes.",
   "main": "index.js",
   "scripts": {

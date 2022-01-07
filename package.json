@@ -21,6 +21,6 @@
   },
   "dependencies": {
     "moment": "^2.24.0",
-    "superagent": "^6.0.0"
+    "superagent": "^7.0.0"
   }
 }
